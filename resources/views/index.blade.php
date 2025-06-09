@@ -282,7 +282,7 @@
 
 
                 <!-- 🗣️ Quiz -->
-                <section class="bg-white dark:bg-gray-800 rounded-lg shadow p-6" x-data="{ selected: {}, submitted: {} }">
+                {{-- <section class="bg-white dark:bg-gray-800 rounded-lg shadow p-6" x-data="{ selected: {}, submitted: {} }">
                     <h2 class="text-2xl font-bold mb-6 dark:text-white">📝 Respond & Reflect</h2>
 
                     <div class="space-y-6 text-gray-700 dark:text-gray-300">
@@ -365,7 +365,7 @@
 
 
                     </div>
-                </section>
+                </section> --}}
 
 
 
