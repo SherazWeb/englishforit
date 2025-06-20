@@ -182,92 +182,60 @@
                     </section>
                 @endif
 
-                <!-- 🗣️ Quiz -->
-                {{-- <section class="bg-white dark:bg-gray-800 rounded-lg shadow p-6" x-data="{ selected: {}, submitted: {} }">
-                    <h2 class="text-2xl font-bold mb-6 dark:text-white">📝 Respond & Reflect</h2>
+                @if (!empty($contents->quiz) && $contents->quiz->questions->count())
+                    <section class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-8">
+                        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">🧠 Quiz Time</h2>
 
-                    <div class="space-y-6 text-gray-700 dark:text-gray-300">
+                        @foreach ($contents->quiz->questions as $index => $question)
+                            <div class="p-4 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900"
+                                x-data="{
+                                    selected: null,
+                                    submitted: false,
+                                    correctIndex: '{{ $question->correct_index }}',
+                                    explanation: @js($question->explanation),
+                                    checkAnswer() {
+                                        this.submitted = true;
+                                    }
+                                }">
+                                <h3 class="font-semibold text-lg text-gray-800 dark:text-white">
+                                    {{ $loop->iteration }}. {!! $question->question !!}
+                                </h3>
 
-                        <!-- Q1 -->
-                        <div>
-                            <p class="font-medium mb-2">1. What did Sara work on in the stand-up conversation?</p>
-                            <div class="space-y-2">
-                                <template
-                                    x-for="(option, index) in ['Database schema changes', 'Login UI and password reset testing', 'Frontend animations']"
-                                    :key="index">
-                                    <label
-                                        :class="{
-                                            'bg-indigo-100 dark:bg-indigo-700 text-indigo-900 dark:text-white': selected[
-                                                1] === option,
-                                            'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200': selected[
-                                                1] !== option
-                                        }"
-                                        class="flex items-center rounded px-4 py-2 cursor-pointer transition">
-                                        <input type="radio" :value="option" name="q1"
-                                            x-model="selected[1]" class="mr-3" />
-                                        <span x-text="option"></span>
-                                    </label>
+                                <div class="mt-3 space-y-2">
+                                    @foreach ($question->options as $key => $option)
+                                        <label class="flex items-center space-x-2 text-gray-700 dark:text-gray-300">
+                                            <input type="radio" x-model="selected" :value="'{{ $key }}'"
+                                                class="form-radio text-indigo-600 dark:bg-gray-800">
+                                            <span>{{ $option }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
+
+                                <button @click="checkAnswer" :disabled="!selected || submitted"
+                                    class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition disabled:opacity-50">
+                                    Submit Answer
+                                </button>
+
+                                <template x-if="submitted">
+                                    <div class="mt-3">
+                                        <template x-if="selected === correctIndex">
+                                            <div class="text-green-600 dark:text-green-400 font-semibold">
+                                                ✅ Correct! <span class="block text-sm mt-1"
+                                                    x-text="explanation"></span>
+                                            </div>
+                                        </template>
+                                        <template x-if="selected !== correctIndex">
+                                            <div class="text-red-600 dark:text-red-400 font-semibold">
+                                                ❌ Incorrect. <span class="block text-sm mt-1"
+                                                    x-text="explanation"></span>
+                                            </div>
+                                        </template>
+                                    </div>
                                 </template>
                             </div>
-                            <button @click="submitted[1] = true"
-                                class="mt-2 px-4 py-1 bg-green-600 text-white rounded hover:bg-green-700">Submit</button>
-                        </div>
-
-                        <!-- Q2 -->
-                        <div>
-                            <p class="font-medium mb-2">2. What is Mixpanel used for?</p>
-                            <div class="space-y-2">
-                                <template
-                                    x-for="(option, index) in ['Bug tracking', 'User behavior analytics', 'Email notifications']"
-                                    :key="index">
-                                    <label
-                                        :class="{
-                                            'bg-indigo-100 dark:bg-indigo-700 text-indigo-900 dark:text-white': selected[
-                                                2] === option,
-                                            'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200': selected[
-                                                2] !== option
-                                        }"
-                                        class="flex items-center rounded px-4 py-2 cursor-pointer transition">
-                                        <input type="radio" :value="option" name="q2"
-                                            x-model="selected[2]" class="mr-3" />
-                                        <span x-text="option"></span>
-                                    </label>
-                                </template>
-                            </div>
-                            <button @click="submitted[2] = true"
-                                class="mt-2 px-4 py-1 bg-green-600 text-white rounded hover:bg-green-700">Submit</button>
-                        </div>
-
-                        <!-- Q3 -->
-                        <div>
-                            <p class="font-medium mb-2">3. What are blockers typically discussed in stand-ups?</p>
-                            <div class="space-y-2">
-                                <template
-                                    x-for="(option, index) in ['Personal scheduling conflicts', 'Unresolved technical issues', 'Team-building ideas']"
-                                    :key="index">
-                                    <label
-                                        :class="{
-                                            'bg-indigo-100 dark:bg-indigo-700 text-indigo-900 dark:text-white': selected[
-                                                3] === option,
-                                            'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200': selected[
-                                                3] !== option
-                                        }"
-                                        class="flex items-center rounded px-4 py-2 cursor-pointer transition">
-                                        <input type="radio" :value="option" name="q3"
-                                            x-model="selected[3]" class="mr-3" />
-                                        <span x-text="option"></span>
-                                    </label>
-                                </template>
-                            </div>
-                            <button @click="submitted[3] = true"
-                                class="mt-2 px-4 py-1 bg-green-600 text-white rounded hover:bg-green-700">Submit</button>
-                        </div>
-
-
-
-                    </div>
-                </section> --}}
-
+                        @endforeach
+                    </section>
+                @endif
 
 
                 <!-- ✍️ Writing -->

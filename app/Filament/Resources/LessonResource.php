@@ -30,6 +30,7 @@ class LessonResource extends Resource
                     ->required()
                     ->searchable()
                     ->preload(),
+
                 Forms\Components\TextInput::make('title')
                     ->required()
                     ->maxLength(255)
@@ -40,49 +41,98 @@ class LessonResource extends Resource
                         }
                         $set('slug', Str::slug($state));
                     }),
+
                 Forms\Components\TextInput::make('slug')
                     ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
+
                 Forms\Components\TextInput::make('order')
                     ->required()
                     ->numeric()
                     ->default(0),
+
                 Forms\Components\Textarea::make('summary')
                     ->columnSpanFull(),
+
                 Forms\Components\Toggle::make('is_premium')
                     ->required(),
-                
+
                 // Listening Section
                 Forms\Components\Section::make('Listening Section')
                     ->schema([
                         Forms\Components\FileUpload::make('listening_audio_path')
                             ->required()
                             ->directory('lessons/audio')
-                            ->acceptedFileTypes(['audio/mp4', 'audio/x-m4a', 'audio/m4a', 'audio/mpeg', 'audio/wav', 'audio/mp3'])
+                            ->acceptedFileTypes([
+                                'audio/mp4',
+                                'audio/x-m4a',
+                                'audio/m4a',
+                                'audio/mpeg',
+                                'audio/wav',
+                                'audio/mp3'
+                            ])
                             ->maxSize(10240), // 10MB
+
                         Forms\Components\RichEditor::make('listening_transcript')
                             ->columnSpanFull(),
                     ]),
-                
+
                 // Reading Section
                 Forms\Components\Section::make('Reading Section')
                     ->schema([
                         Forms\Components\RichEditor::make('reading_content')
                             ->required()
                             ->columnSpanFull(),
+
                         Forms\Components\Repeater::make('reading_vocabulary')
                             ->schema([
-                                Forms\Components\TextInput::make('term')
-                                    ->required(),
-                                Forms\Components\TextInput::make('definition')
-                                    ->required(),
+                                Forms\Components\TextInput::make('term')->required(),
+                                Forms\Components\TextInput::make('definition')->required(),
                             ])
                             ->columnSpanFull()
                             ->grid(2),
                     ]),
+
+                // Quiz Questions Section
+                Forms\Components\Repeater::make('quizQuestions')
+                    ->label('Quiz Questions')
+                    ->schema([
+                        Forms\Components\TextInput::make('order')
+                            ->numeric()
+                            ->required()
+                            ->default(0),
+
+                        Forms\Components\Textarea::make('question')
+                            ->required()
+                            ->columnSpanFull(),
+
+                        Forms\Components\KeyValue::make('options')
+                            ->keyLabel('Option Key (A,B,C,D)')
+                            ->valueLabel('Option Text')
+                            ->required()
+                            ->columnSpanFull(),
+
+                        Forms\Components\Select::make('correct_index')
+                            ->label('Correct Answer')
+                            ->options(fn($get) => collect($get('options') ?? [])
+                                ->mapWithKeys(fn($v, $k) => [$k => $v]))
+                            ->required(),
+
+                        Forms\Components\Textarea::make('explanation')
+                            ->nullable()
+                            ->columnSpanFull(),
+                    ])
+                    ->defaultItems(8)
+                    // ->minItems(8)
+                    ->maxItems(2)
+                    ->collapsible()
+                    ->itemLabel(fn(array $state): ?string => $state['question'] ?? null)
+
+                    ->collapsible(),
             ]);
     }
+
 
     public static function table(Table $table): Table
     {
