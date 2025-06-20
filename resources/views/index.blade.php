@@ -76,156 +76,53 @@
             class="w-64 bg-white dark:bg-gray-800 shadow-md fixed h-[calc(100vh-5rem)] z-10 transition-all duration-300 ease-in-out border-r border-gray-200 dark:border-gray-700"
             :class="mobileSidebarOpen ? 'left-0' : '-left-64 md:left-0'">
             <div class="overflow-y-auto h-full pb-20">
-                <!-- Sidebar content -->
                 <div class="px-4 py-2">
                     <h3 class="font-bold text-lg mb-2 dark:text-white">Modules</h3>
                     <div class="space-y-1">
-                        <!-- Module 1 -->
-                        <div x-data="{ open: activeModule === 1 }">
-                            <button @click="activeModule = activeModule === 1 ? null : 1; open = !open"
-                                class="w-full text-left px-2 py-2 bg-gray-100 dark:bg-gray-700 rounded flex justify-between items-center hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                                :class="activeModule === 1 ? 'text-w3schools dark:text-w3schools-light font-semibold' :
-                                    'text-gray-800 dark:text-gray-200'">
-                                <span>Getting Started</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform"
-                                    :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd"
-                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                            </button>
-                            <div x-show="open" x-collapse class="ml-4 mt-1 space-y-1">
-                                <a href="#" @click="activeSubTopic = 'intro'; mobileSidebarOpen = false"
-                                    class="block px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
-                                    :class="activeSubTopic === 'intro' ?
-                                        'text-w3schools dark:text-w3schools-light font-medium' :
-                                        'text-gray-700 dark:text-gray-300'">
-                                    Introduction
-                                </a><a href="#" @click="activeSubTopic = 'intro'; mobileSidebarOpen = false"
-                                    class="block px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
-                                    :class="activeSubTopic === 'intro' ?
-                                        'text-w3schools dark:text-w3schools-light font-medium' :
-                                        'text-gray-700 dark:text-gray-300'">
-                                    Introduction
-                                </a><a href="#" @click="activeSubTopic = 'intro'; mobileSidebarOpen = false"
-                                    class="block px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
-                                    :class="activeSubTopic === 'intro' ?
-                                        'text-w3schools dark:text-w3schools-light font-medium' :
-                                        'text-gray-700 dark:text-gray-300'">
-                                    Introduction
-                                </a><a href="#" @click="activeSubTopic = 'intro'; mobileSidebarOpen = false"
-                                    class="block px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
-                                    :class="activeSubTopic === 'intro' ?
-                                        'text-w3schools dark:text-w3schools-light font-medium' :
-                                        'text-gray-700 dark:text-gray-300'">
-                                    Introduction
-                                </a><a href="#" @click="activeSubTopic = 'intro'; mobileSidebarOpen = false"
-                                    class="block px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
-                                    :class="activeSubTopic === 'intro' ?
-                                        'text-w3schools dark:text-w3schools-light font-medium' :
-                                        'text-gray-700 dark:text-gray-300'">
-                                    Introduction
-                                </a><a href="#" @click="activeSubTopic = 'intro'; mobileSidebarOpen = false"
-                                    class="block px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
-                                    :class="activeSubTopic === 'intro' ?
-                                        'text-w3schools dark:text-w3schools-light font-medium' :
-                                        'text-gray-700 dark:text-gray-300'">
-                                    Introduction
-                                </a>
-                                <a href="#" @click="activeSubTopic = 'setup'; mobileSidebarOpen = false"
-                                    class="block px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
-                                    :class="activeSubTopic === 'setup' ?
-                                        'text-w3schools dark:text-w3schools-light font-medium' :
-                                        'text-gray-700 dark:text-gray-300'">
-                                    Setup & Installation
-                                </a>
-                                <a href="#" @click="activeSubTopic = 'examples'; mobileSidebarOpen = false"
-                                    class="block px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
-                                    :class="activeSubTopic === 'examples' ?
-                                        'text-w3schools dark:text-w3schools-light font-medium' :
-                                        'text-gray-700 dark:text-gray-300'">
-                                    Examples
-                                </a>
+                        @foreach ($modules as $module)
+                            <div x-data="{
+                                open: activeModule === {{ $module->id }},
+                                localActiveLesson: null
+                            }">
+                                <button
+                                    @click="
+                            activeModule = activeModule === {{ $module->id }} ? null : {{ $module->id }};
+                            open = !open;
+                            if (!open) {
+                                localActiveLesson = null;
+                                activeSubTopic = null;
+                            }
+                        "
+                                    class="w-full text-left px-2 py-2 bg-gray-100 dark:bg-gray-700 rounded flex justify-between items-center hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                                    :class="activeModule === {{ $module->id }} ?
+                                        'text-w3schools dark:text-w3schools-light font-semibold' :
+                                        'text-gray-800 dark:text-gray-200'">
+                                    <span>{{ $module->title }}</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform"
+                                        :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                                <div x-show="open" x-collapse class="ml-4 mt-1 space-y-1">
+                                    @foreach ($module->lessons as $lesson)
+                                        <a href="{{ route('lesson.show', ['module' => $module->slug, 'lesson' => $lesson->slug]) }}"
+                                            @click="
+        activeSubTopic = '{{ $lesson->id }}';
+        localActiveLesson = '{{ $lesson->id }}';
+        mobileSidebarOpen = false;
+    "
+                                            class="block px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+                                            :class="activeSubTopic === '{{ $lesson->id }}' ?
+                                                'text-w3schools dark:text-w3schools-light font-medium' :
+                                                'text-gray-700 dark:text-gray-300'">
+                                            {{ $lesson->title }}
+                                        </a>
+                                    @endforeach
+                                </div>
                             </div>
-                        </div>
-
-                        <!-- Module 2 -->
-                        <div x-data="{ open: activeModule === 2 }">
-                            <button @click="activeModule = activeModule === 2 ? null : 2; open = !open"
-                                class="w-full text-left px-2 py-2 bg-gray-100 dark:bg-gray-700 rounded flex justify-between items-center hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                                :class="activeModule === 2 ? 'text-w3schools dark:text-w3schools-light font-semibold' :
-                                    'text-gray-800 dark:text-gray-200'">
-                                <span>Core Concepts</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform"
-                                    :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd"
-                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                            </button>
-                            <div x-show="open" x-collapse class="ml-4 mt-1 space-y-1">
-                                <a href="#" @click="activeSubTopic = 'components'; mobileSidebarOpen = false"
-                                    class="block px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
-                                    :class="activeSubTopic === 'components' ?
-                                        'text-w3schools dark:text-w3schools-light font-medium' :
-                                        'text-gray-700 dark:text-gray-300'">
-                                    Components
-                                </a>
-                                <a href="#" @click="activeSubTopic = 'props'; mobileSidebarOpen = false"
-                                    class="block px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
-                                    :class="activeSubTopic === 'props' ?
-                                        'text-w3schools dark:text-w3schools-light font-medium' :
-                                        'text-gray-700 dark:text-gray-300'">
-                                    Props & State
-                                </a>
-                                <a href="#" @click="activeSubTopic = 'events'; mobileSidebarOpen = false"
-                                    class="block px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
-                                    :class="activeSubTopic === 'events' ?
-                                        'text-w3schools dark:text-w3schools-light font-medium' :
-                                        'text-gray-700 dark:text-gray-300'">
-                                    Events
-                                </a>
-                            </div>
-                        </div>
-
-                        <!-- Module 3 -->
-                        <div x-data="{ open: activeModule === 3 }">
-                            <button @click="activeModule = activeModule === 3 ? null : 3; open = !open"
-                                class="w-full text-left px-2 py-2 bg-gray-100 dark:bg-gray-700 rounded flex justify-between items-center hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                                :class="activeModule === 3 ? 'text-w3schools dark:text-w3schools-light font-semibold' :
-                                    'text-gray-800 dark:text-gray-200'">
-                                <span>Advanced Topics</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform"
-                                    :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd"
-                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                            </button>
-                            <div x-show="open" x-collapse class="ml-4 mt-1 space-y-1">
-                                <a href="#" @click="activeSubTopic = 'routing'; mobileSidebarOpen = false"
-                                    class="block px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
-                                    :class="activeSubTopic === 'routing' ?
-                                        'text-w3schools dark:text-w3schools-light font-medium' :
-                                        'text-gray-700 dark:text-gray-300'">
-                                    Routing
-                                </a>
-                                <a href="#" @click="activeSubTopic = 'auth'; mobileSidebarOpen = false"
-                                    class="block px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
-                                    :class="activeSubTopic === 'auth' ?
-                                        'text-w3schools dark:text-w3schools-light font-medium' :
-                                        'text-gray-700 dark:text-gray-300'">
-                                    Authentication
-                                </a>
-                                <a href="#" @click="activeSubTopic = 'api'; mobileSidebarOpen = false"
-                                    class="block px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
-                                    :class="activeSubTopic === 'api' ?
-                                        'text-w3schools dark:text-w3schools-light font-medium' :
-                                        'text-gray-700 dark:text-gray-300'">
-                                    API Integration
-                                </a>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -235,51 +132,55 @@
         <main class="flex-1 ml-0 md:ml-64 transition-all duration-300 ease-in-out">
             <div class="container mx-auto px-4 py-6 space-y-6">
 
-                <!-- 🧠 Reading & Vocabulary -->
-                <section class="bg-white dark:bg-gray-800 rounded-lg shadow p-6" x-data="{ showText: false }">
-                    <!-- Lesson Title -->
-                    <h2 class="text-2xl font-bold mb-4 dark:text-white">🎧 Communication: Daily Stand-up</h2>
+                <!-- Listening Section -->
+                @if (!empty($contents))
+                    <section class="bg-white dark:bg-gray-800 rounded-lg shadow p-6" x-data="{ showText: false }">
+                        <h2 class="text-2xl font-bold mb-4 dark:text-white">🎧 {{ $contents->title }}</h2>
 
-                    <!-- Audio Player -->
-                    <audio controls class="w-full mb-4">
-                        <source src="1.m4a" type="audio/mpeg">
-                        Your browser does not support the audio element.
-                    </audio>
+                        <!-- Audio Player -->
+                        @if ($contents->listening_audio_path)
+                            <audio controls class="w-full mb-4">
+                                <source src="{{ asset($contents->listening_audio_path) }}" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        @endif
 
-                    <!-- Toggle Button -->
-                    <button @click="showText = !showText"
-                        class="mb-4 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition">
-                        <span x-show="!showText">🔽 Show Conversation</span>
-                        <span x-show="showText">🔼 Hide Conversation</span>
-                    </button>
+                        <!-- Toggle Button -->
+                        @if ($contents->listening_transcript)
+                            <button @click="showText = !showText"
+                                class="mb-4 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition">
+                                <span x-show="!showText">🔽 Show Conversation</span>
+                                <span x-show="showText">🔼 Hide Conversation</span>
+                            </button>
+                        @endif
 
-                    <!-- Hidden Text -->
-                    <div x-show="showText" x-transition class="text-gray-700 dark:text-gray-300 space-y-2">
-                        <p><strong>Team Lead:</strong> Hey everyone, let’s begin. Sara, you can go first.</p>
-                        <p><strong>Sara:</strong> Sure. Yesterday, I finished the login UI and started testing the
-                            password reset flow. Today, I’ll fix a bug in the reset form. No blockers.</p>
-                        <p><strong>Team Lead:</strong> Thanks. John?</p>
-                        <p><strong>John:</strong> Yesterday, I refactored the dashboard code. Today, I’ll add analytics
-                            tracking. I need help with Mixpanel integration.</p>
-                    </div>
-                </section>
+                        <!-- Hidden Text -->
+                        <div x-show="showText" x-transition class="text-gray-700 dark:text-gray-300 space-y-2">
+                            {!! $contents->listening_transcript !!}
+                        </div>
+                    </section>
 
+                    <!-- Reading Section -->
+                    <section class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                        <h2 class="text-2xl font-bold mb-4 dark:text-white">📖 Reading</h2>
+                        <div class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                            {!! $contents->reading_content !!}
+                        </div>
 
-                {{-- reading --}}
-                <section class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                    <h2 class="text-2xl font-bold mb-4 dark:text-white">📖 Reading</h2>
-
-                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
-                        When working on a user interface, it’s important to test edge cases like password reset flows,
-                        which often get overlooked. After finalizing the login design, QA teams typically run manual or
-                        automated tests to check for usability issues or system crashes. Meanwhile, backend engineers
-                        may be busy refactoring code — for instance, optimizing how the dashboard loads or integrating
-                        analytics tools like Mixpanel to track user behavior. These updates often require team members
-                        to collaborate during daily stand-ups and mention any blockers so others can step in and assist.
-                    </p>
-                </section>
-
-
+                        {{-- @if ($contents->reading_vocabulary)
+                        <div class="mt-4">
+                            <h3 class="text-lg font-semibold mb-2 dark:text-white">Vocabulary</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                @foreach (json_decode($contents->reading_vocabulary, true) as $word => $definition)
+                                    <div class="bg-gray-100 dark:bg-gray-700 p-3 rounded">
+                                        <strong>{{ $word }}:</strong> {{ $definition }}
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif --}}
+                    </section>
+                @endif
 
                 <!-- 🗣️ Quiz -->
                 {{-- <section class="bg-white dark:bg-gray-800 rounded-lg shadow p-6" x-data="{ selected: {}, submitted: {} }">
@@ -380,8 +281,8 @@
                     </p>
 
                     <textarea rows="5"
-  class="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 transition"
-  placeholder="Example: Yesterday I completed the dashboard layout. Today I'll integrate Mixpanel tracking. No blockers right now."></textarea>
+                        class="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 transition"
+                        placeholder="Example: Yesterday I completed the dashboard layout. Today I'll integrate Mixpanel tracking. No blockers right now."></textarea>
 
                     <button class="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
                         Submit
