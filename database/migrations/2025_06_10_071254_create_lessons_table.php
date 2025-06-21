@@ -26,7 +26,10 @@ return new class extends Migration
 
             // Reading Section
             $table->text('reading_content');       
-            $table->json('reading_vocabulary')->nullable();    
+            $table->json('reading_vocabulary')->nullable(); 
+            
+            // writing section
+            $table->text('writing_section')->nullable();
 
             $table->timestamps();
         });
