@@ -29,7 +29,7 @@ return new class extends Migration
             $table->json('reading_vocabulary')->nullable(); 
             
             // writing section
-            $table->text('writing_section')->nullable();
+            $table->text('writing_prompt')->nullable();
 
             $table->timestamps();
         });

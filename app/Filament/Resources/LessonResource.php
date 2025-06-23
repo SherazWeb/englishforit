@@ -123,12 +123,23 @@ class LessonResource extends Resource
                             ->nullable()
                             ->columnSpanFull(),
                     ])
-                    ->defaultItems(8)
+                    // ->defaultItems(8)
                     // ->minItems(8)
                     ->maxItems(2)
                     ->collapsible()
                     ->itemLabel(fn(array $state): ?string => $state['question'] ?? null)
 
+                    ->collapsible(),
+
+                Forms\Components\Section::make('Writing Section')
+                    ->schema([
+                        Forms\Components\Textarea::make('writing_prompt')
+                            ->label('Writing Prompt')
+                            ->helperText('This prompt will be shown to the user for writing practice.')
+                            ->nullable()
+                            ->rows(5)
+                            ->columnSpanFull(),
+                    ])
                     ->collapsible(),
             ]);
     }

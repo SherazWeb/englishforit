@@ -167,95 +167,35 @@
                             {!! $contents->reading_content !!}
                         </div>
 
-                        {{-- @if ($contents->reading_vocabulary)
-                        <div class="mt-4">
-                            <h3 class="text-lg font-semibold mb-2 dark:text-white">Vocabulary</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                @foreach (json_decode($contents->reading_vocabulary, true) as $word => $definition)
-                                    <div class="bg-gray-100 dark:bg-gray-700 p-3 rounded">
-                                        <strong>{{ $word }}:</strong> {{ $definition }}
-                                    </div>
-                                @endforeach
+                        @if ($contents->reading_vocabulary)
+                            <div class="mt-4">
+                                <h3 class="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">Vocabulary</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                    @foreach ($contents->reading_vocabulary as $item)
+                                        <div
+                                            class="bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-100 p-3 rounded-lg shadow-sm">
+                                            <strong class="text-gray-900 dark:text-white">{{ $item['term'] }}:</strong>
+                                            <span class="block mt-1">{{ $item['definition'] }}</span>
+                                        </div>
+                                    @endforeach
+                                </div>
                             </div>
-                        </div>
-                    @endif --}}
+                        @endif
+
                     </section>
                 @endif
 
                 @if (!empty($contents->quiz) && $contents->quiz->questions->count())
-                    <section class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-8">
-                        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">🧠 Quiz Time</h2>
-
-                        @foreach ($contents->quiz->questions as $index => $question)
-                            <div class="p-4 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900"
-                                x-data="{
-                                    selected: null,
-                                    submitted: false,
-                                    correctIndex: '{{ $question->correct_index }}',
-                                    explanation: @js($question->explanation),
-                                    checkAnswer() {
-                                        this.submitted = true;
-                                    }
-                                }">
-                                <h3 class="font-semibold text-lg text-gray-800 dark:text-white">
-                                    {{ $loop->iteration }}. {!! $question->question !!}
-                                </h3>
-
-                                <div class="mt-3 space-y-2">
-                                    @foreach ($question->options as $key => $option)
-                                        <label class="flex items-center space-x-2 text-gray-700 dark:text-gray-300">
-                                            <input type="radio" x-model="selected" :value="'{{ $key }}'"
-                                                class="form-radio text-indigo-600 dark:bg-gray-800">
-                                            <span>{{ $option }}</span>
-                                        </label>
-                                    @endforeach
-                                </div>
-
-                                <button @click="checkAnswer" :disabled="!selected || submitted"
-                                    class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition disabled:opacity-50">
-                                    Submit Answer
-                                </button>
-
-                                <template x-if="submitted">
-                                    <div class="mt-3">
-                                        <template x-if="selected === correctIndex">
-                                            <div class="text-green-600 dark:text-green-400 font-semibold">
-                                                ✅ Correct! <span class="block text-sm mt-1"
-                                                    x-text="explanation"></span>
-                                            </div>
-                                        </template>
-                                        <template x-if="selected !== correctIndex">
-                                            <div class="text-red-600 dark:text-red-400 font-semibold">
-                                                ❌ Incorrect. <span class="block text-sm mt-1"
-                                                    x-text="explanation"></span>
-                                            </div>
-                                        </template>
-                                    </div>
-                                </template>
-                            </div>
-                        @endforeach
-                    </section>
+                    @foreach ($contents->quiz->questions as $question)
+                        <livewire:quiz-submission :question-id="$question->id" :key="$question->id" />
+                    @endforeach
                 @endif
 
 
                 <!-- ✍️ Writing -->
-                <section class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                    <h2 class="text-2xl font-bold mb-4 dark:text-white">✍️ 4. Write It Yourself</h2>
-
-                    <p class="text-gray-700 dark:text-gray-300 mb-2">
-                        Based on what you heard in the stand-up and read in the paragraph, write your own stand-up
-                        update. Use the format: <br>
-                        <span class="italic">"Yesterday I... Today I... Blockers..."</span>
-                    </p>
-
-                    <textarea rows="5"
-                        class="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 transition"
-                        placeholder="Example: Yesterday I completed the dashboard layout. Today I'll integrate Mixpanel tracking. No blockers right now."></textarea>
-
-                    <button class="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
-                        Submit
-                    </button>
-                </section>
+                @if (!empty($contents))
+                    @livewire('lesson-writing-form', ['lessonId' => $contents->id, 'prompt' => $contents->writing_prompt])
+                @endif
 
             </div>
         </main>
