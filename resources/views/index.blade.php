@@ -4,7 +4,8 @@
     activeModule: null,
     activeSubTopic: null,
     darkMode: true,
-    mobileSidebarOpen: false
+    mobileSidebarOpen: false,
+    authModalOpen: false // New Alpine state for auth modal
 }" :class="darkMode ? 'dark' : ''">
 
 <head>
@@ -40,18 +41,75 @@
                         </svg>
                     </button>
 
-                    <!-- Mobile menu button -->
-                    <button class="md:hidden" @click="mobileSidebarOpen = !mobileSidebarOpen">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700 dark:text-gray-300"
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
+                    <!-- Sign-in Button -->
+                    <button @click="authModalOpen = true"
+                        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors">
+                        Sign in
                     </button>
                 </div>
             </div>
         </div>
     </header>
+
+    <!-- Sign-in Modal (Fixed overlay) -->
+    <div x-show="authModalOpen" @click.away="authModalOpen = false"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+        x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
+        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+        <div @click.stop class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-md p-6 mx-4"
+            x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 scale-95"
+            x-transition:enter-end="opacity-100 scale-100" x-transition:leave="ease-in duration-200"
+            x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gray-800 dark:text-white">Sign in</h3>
+                <button @click="authModalOpen = false"
+                    class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                    ✕
+                </button>
+            </div>
+
+            <p class="text-gray-600 dark:text-gray-300 mb-4">Get access to more learning features</p>
+
+            <!-- Social Login Buttons (Placeholder) -->
+            <div class="flex space-x-2 mb-4">
+                <button class="flex-1 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md transition-colors">
+                    Google
+                </button>
+                <button class="flex-1 py-2 bg-gray-800 hover:bg-gray-900 text-white rounded-md transition-colors">
+                    GitHub
+                </button>
+            </div>
+
+            <p class="text-center text-gray-500 dark:text-gray-400 mb-4">or</p>
+
+            <!-- Login Form -->
+            <form method="POST" action="/login" class="space-y-4">
+                @csrf
+                <div>
+                    <input type="email" name="email" placeholder="Email" required
+                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+                </div>
+                <div>
+                    <input type="password" name="password" placeholder="Password" required
+                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+                </div>
+                <div class="flex justify-between items-center">
+                    <a href="/forgot-password" class="text-sm text-blue-600 hover:underline dark:text-blue-400">Forgot
+                        password?</a>
+                </div>
+                <button type="submit"
+                    class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors">
+                    Sign in
+                </button>
+            </form>
+
+            <p class="mt-4 text-center text-gray-600 dark:text-gray-300">
+                Don't have an account? <a href="/register"
+                    class="text-blue-600 hover:underline dark:text-blue-400">Register</a>
+            </p>
+        </div>
+    </div>
 
     <!-- Subheader -->
     <div class="bg-w3schools-light dark:bg-w3schools-darker mt-14 sticky top-14">
@@ -174,7 +232,8 @@
                                     @foreach ($contents->reading_vocabulary as $item)
                                         <div
                                             class="bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-100 p-3 rounded-lg shadow-sm">
-                                            <strong class="text-gray-900 dark:text-white">{{ $item['term'] }}:</strong>
+                                            <strong
+                                                class="text-gray-900 dark:text-white">{{ $item['term'] }}:</strong>
                                             <span class="block mt-1">{{ $item['definition'] }}</span>
                                         </div>
                                     @endforeach
