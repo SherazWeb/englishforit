@@ -1,0 +1,30 @@
+<aside class="w-64 bg-white dark:bg-gray-800 shadow-md fixed h-[calc(100vh-5rem)] z-10 transition-all duration-300 ease-in-out border-r border-gray-200 dark:border-gray-700"
+       :class="mobileSidebarOpen ? 'left-0' : '-left-64 md:left-0'">
+    <div class="overflow-y-auto h-full pb-20 px-4 py-2">
+        <h3 class="font-bold text-lg mb-2 dark:text-white">Modules</h3>
+        <div class="space-y-1">
+            @foreach ($modules as $module)
+                <div x-data="moduleToggle({{ $module->id }})">
+                    <button @click="toggleModule({{ $module->id }})"
+                            class="w-full text-left px-2 py-2 bg-gray-100 dark:bg-gray-700 rounded flex justify-between items-center hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                            :class="activeModule === {{ $module->id }} ? 'text-w3schools dark:text-w3schools-light font-semibold' : 'text-gray-800 dark:text-gray-200'">
+                        <span>{{ $module->title }}</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform" :class="open ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="..." clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                    <div x-show="open" x-collapse class="ml-4 mt-1 space-y-1">
+                        @foreach ($module->lessons as $lesson)
+                            <a href="{{ route('lesson.show', ['module' => $module->slug, 'lesson' => $lesson->slug]) }}"
+                               @click="activateLesson('{{ $lesson->id }}')"
+                               class="block px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+                               :class="activeSubTopic === '{{ $lesson->id }}' ? 'text-w3schools dark:text-w3schools-light font-medium' : 'text-gray-700 dark:text-gray-300'">
+                                {{ $lesson->title }}
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</aside>
