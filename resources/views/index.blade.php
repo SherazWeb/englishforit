@@ -26,22 +26,22 @@
     </div>
 
     <script>
-        function moduleToggle(moduleId) {
-            return {
-                open: false,
-                toggleModule(id) {
-                    this.open = !this.open;
-                    this.$root.activeModule = this.$root.activeModule === id ? null : id;
-                    if (!this.open) {
-                        this.$root.activeSubTopic = null;
-                    }
-                },
-                activateLesson(lessonId) {
-                    this.$root.activeSubTopic = lessonId;
-                    this.$root.mobileSidebarOpen = false;
-                }
-            }
-        }
+        // function moduleToggle(moduleId) {
+        //     return {
+        //         open: false,
+        //         toggleModule(id) {
+        //             this.open = !this.open;
+        //             this.$root.activeModule = this.$root.activeModule === id ? null : id;
+        //             if (!this.open) {
+        //                 this.$root.activeSubTopic = null;
+        //             }
+        //         },
+        //         activateLesson(lessonId) {
+        //             this.$root.activeSubTopic = lessonId;
+        //             this.$root.mobileSidebarOpen = false;
+        //         }
+        //     }
+        // }
     </script>
 
 </x-layouts.app>

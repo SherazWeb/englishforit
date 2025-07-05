@@ -6,10 +6,18 @@
     <title>{{ $title ?? 'Layout' }}</title>
     @vite('resources/css/app.css')
     @livewireStyles
+
+    <style>
+        x-cloak {
+            display: none;
+        }
+    </style>
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 font-sans transition-colors duration-200">
 
     @include('partials.header')
+
+    @livewire('auth.login-modal')
 
     {{ $slot }}
 
@@ -20,8 +28,6 @@
         function layout() {
             return {
                 sidebarOpen: true,
-                activeModule: null,
-                activeSubTopic: null,
                 darkMode: true,
                 mobileSidebarOpen: false
             }
