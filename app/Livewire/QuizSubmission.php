@@ -10,10 +10,17 @@ class QuizSubmission extends Component
 {
     public $questionId;
     public $selectedOption = null;
+    protected $listeners = ['answer-saved' => 'handleAnswerSaved'];
+
+    public function handleAnswerSaved()
+    {
+        // No need to modify this if you're just using the event
+    }
 
     public function submit()
     {
         $question = \App\Models\QuizQuestion::findOrFail($this->questionId);
+        $isCorrect = $this->selectedOption == $question->correct_index;
 
         QuizAnswer::updateOrCreate(
             [
@@ -22,11 +29,12 @@ class QuizSubmission extends Component
             ],
             [
                 'selected_option' => $this->selectedOption,
-                'is_correct' => $this->selectedOption === $correctKey = $question->correct_index,
+                'is_correct' => $isCorrect,
             ]
         );
 
-        $this->dispatch('answer-saved');
+        $this->dispatch('answer-saved', correct: $isCorrect);
+        return $isCorrect;
     }
 
     public function render()

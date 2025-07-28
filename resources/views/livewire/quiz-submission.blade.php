@@ -5,15 +5,18 @@
 @endphp
 
 <div class="p-4 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900"
-     x-data="{
-         selected: @entangle('selectedOption'),
-         submitted: false,
-         correctIndex: '{{ $correctKey }}',
-         explanation: @js($question->explanation),
-         checkAnswer() {
-             $wire.submit().then(() => this.submitted = true);
-         }
-     }">
+    x-data="{
+        selected: @entangle('selectedOption'),
+        submitted: false,
+        correctIndex: '{{ $correctKey }}',
+        explanation: @js($question->explanation),
+        checkAnswer() {
+            $wire.submit().then((isCorrect) => {
+                this.submitted = true;
+                // This will trigger the parent component's score update
+            });
+        }
+    }">
 
     <h3 class="font-semibold text-lg text-gray-800 dark:text-white">
         {!! $question->question !!}
@@ -23,14 +26,14 @@
         @foreach ($options as $key => $option)
             <label class="flex items-center space-x-2 text-gray-700 dark:text-gray-300">
                 <input type="radio" x-model="selected" value="{{ $key }}"
-                       class="form-radio text-indigo-600 dark:bg-gray-800">
+                    class="form-radio text-indigo-600 dark:bg-gray-800">
                 <span>{{ $option }}</span>
             </label>
         @endforeach
     </div>
 
     <button @click="checkAnswer" :disabled="!selected || submitted"
-            class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition disabled:opacity-50">
+        class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition disabled:opacity-50">
         Submit Answer
     </button>
 
