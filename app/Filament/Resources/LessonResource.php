@@ -95,7 +95,7 @@ class LessonResource extends Resource
                     ]),
 
                 // Quiz Questions Section
-                Forms\Components\Repeater::make('quizQuestions')
+                Forms\Components\Repeater::make('quizQuestionsData')
                     ->label('Quiz Questions')
                     ->schema([
                         Forms\Components\TextInput::make('order')
