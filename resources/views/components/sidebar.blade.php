@@ -35,8 +35,8 @@
                                     ]);
                             @endphp
 
-                            <a wire:navigate="false" href="{{ route('lesson.show', ['module' => $module->slug, 'lesson' => $lesson->slug]) }}"
-                                class="block px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors {{ $isActiveLesson ? 'text-w3schools dark:text-w3schools-light font-medium' : 'text-gray-700 dark:text-gray-300' }}">
+                            <a href="{{ route('lesson.show', ['module' => $module->slug, 'lesson' => $lesson->slug]) }}"
+                                class="block border-2 border-red-500 px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors {{ $isActiveLesson ? 'text-w3schools dark:text-w3schools-light font-medium' : 'text-gray-700 dark:text-gray-300' }}">
                                 {{ $lesson->title }}
                             </a>
                         @endforeach
