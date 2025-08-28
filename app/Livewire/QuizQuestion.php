@@ -3,46 +3,45 @@
 namespace App\Livewire;
 
 use App\Models\QuizAnswer;
-use App\Models\QuizQuestion as QQ;
+use App\Models\QuizAttempt;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 
 class QuizQuestion extends Component
 {
     public $questionId;
+    public $questionData;
     public $selectedOption = null;
     public $isSubmitted = false;
     public $isCorrect = false;
+    public $counter = 0;
 
-    public function submit()
+    public function saveAnswer($selected, $isCorrect)
     {
-        $question = QQ::findOrFail($this->questionId);
-        $this->isCorrect = $this->selectedOption == $question->correct_index;
-
         QuizAnswer::updateOrCreate(
             [
                 'user_id' => Auth::id(),
                 'quiz_question_id' => $this->questionId,
             ],
             [
-                'selected_option' => $this->selectedOption,
-                'is_correct' => $this->isCorrect,
+                'selected_option' => $selected,
+                'is_correct' => $isCorrect,
             ]
         );
 
-        $this->isSubmitted = true;
-        $this->dispatch('answer-submitted');
+        $this->dispatch('answer-submitted', isCorrect: $isCorrect);
+
     }
+
+
 
     public function render()
     {
-        $question = QQ::findOrFail($this->questionId);
-        
         return view('livewire.quiz-question', [
-            'question' => $question,
-            'options' => $question->options ?? [],
-            'correctKey' => $question->correct_index,
-            'explanation' => $question->explanation,
+            'question'    => $this->questionData,
+            'options'     => $this->questionData->options ?? [],
+            'correctKey'  => $this->questionData->correct_index,
+            'explanation' => $this->questionData->explanation,
         ]);
     }
 }

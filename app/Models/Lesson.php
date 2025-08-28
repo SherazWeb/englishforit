@@ -24,14 +24,14 @@ class Lesson extends Model
     }
 
     public function quizQuestions()
-{
-    return $this->hasManyThrough(
-        QuizQuestion::class,
-        Quiz::class,
-        'lesson_id', // Foreign key on quizzes table
-        'quiz_id',   // Foreign key on quiz_questions table
-        'id',        // Local key on lessons table
-        'id'         // Local key on quizzes table
-    );
-}
+    {
+        return $this->hasManyThrough(
+            QuizQuestion::class,
+            Quiz::class,
+            'lesson_id', // Foreign key on quizzes table
+            'quiz_id',   // Foreign key on quiz_questions table
+            'id',        // Local key on lessons table
+            'id'         // Local key on quizzes table
+        );
+    }
 }

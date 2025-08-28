@@ -95,7 +95,7 @@ class LessonResource extends Resource
                     ]),
 
                 // Quiz Questions Section
-                Forms\Components\Repeater::make('quizQuestionsData')
+                Forms\Components\Repeater::make('quizQuestions')
                     ->label('Quiz Questions')
                     ->schema([
                         Forms\Components\TextInput::make('order')
@@ -111,13 +111,21 @@ class LessonResource extends Resource
                             ->keyLabel('Option Key (A,B,C,D)')
                             ->valueLabel('Option Text')
                             ->required()
+                            ->reactive()
+                            ->default([
+                                'A' => '',
+                                'B' => '',
+                                'C' => '',
+                                'D' => '',
+                            ])
                             ->columnSpanFull(),
 
                         Forms\Components\Select::make('correct_index')
                             ->label('Correct Answer')
                             ->options(fn($get) => collect($get('options') ?? [])
                                 ->mapWithKeys(fn($v, $k) => [$k => $v]))
-                            ->required(),
+                            ->required()
+                            ->reactive(),
 
                         Forms\Components\Textarea::make('explanation')
                             ->nullable()
@@ -125,7 +133,7 @@ class LessonResource extends Resource
                     ])
                     // ->defaultItems(8)
                     // ->minItems(8)
-                    ->maxItems(2)
+                    ->maxItems(15)
                     ->collapsible()
                     ->itemLabel(fn(array $state): ?string => $state['question'] ?? null)
 

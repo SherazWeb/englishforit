@@ -19,4 +19,3 @@ class Quiz extends Model
         return $this->hasMany(QuizQuestion::class)->orderBy('order');
     }
 }
-

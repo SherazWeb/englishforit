@@ -13,6 +13,11 @@ class QuizQuestion extends Model
         'options' => 'array',
     ];
 
+    public function answers()
+    {
+        return $this->hasMany(QuizAnswer::class, 'quiz_question_id');
+    }
+
     public function quiz()
     {
         return $this->belongsTo(Quiz::class);

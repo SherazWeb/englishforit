@@ -10,10 +10,12 @@ class EditLesson extends EditRecord
 {
     protected static string $resource = LessonResource::class;
 
+    protected array $quizQuestionsData = [];
+
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        $this->quizQuestionsData = $data['quizQuestionsData'] ?? [];
-        unset($data['quizQuestionsData']);
+        $this->quizQuestionsData = $data['quizQuestions'] ?? [];
+        unset($data['quizQuestions']);
         return $data;
     }
 
