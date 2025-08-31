@@ -12,7 +12,7 @@ class QuizAttempts extends Component
 
     protected $listeners = ['quizCompleted' => 'handleQuizCompleted'];
 
-    public function handleQuizCompleted($correct, $total, $lessonSlug)
+    public function handleQuizCompleted($correct, $total, $lessonSlug, $currentAttemptId)
     {
         $userId = Auth::id();
 
@@ -23,24 +23,29 @@ class QuizAttempts extends Component
             return;
         }
 
-        $attemptNumber = QuizAttempt::where('user_id', $userId)
-            ->where('lesson_id', $lesson->id)
-            ->max('attempt_number') ?? 0;
-
-        $status = match ($correct) {
-            8       => 'mastered',
-            7       => 'Almost Perfect',
-            default => 'completed',
+        $status = match (true) {
+            $correct === 8 => 'mastered',
+            $correct === 7 => 'almost_perfect',
+            default        => 'completed',
         };
 
-        QuizAttempt::create([
-            'user_id' => $userId,
-            'lesson_id' => $lesson->id,
-            'score' => $correct,
-            'status' => $status,
-            'attempt_number' => $attemptNumber + 1,
-        ]);
+        // Find the existing attempt by ID
+        $attempt = QuizAttempt::where('id', $currentAttemptId)
+            ->where('user_id', $userId)
+            ->where('lesson_id', $lesson->id)
+            ->first();
+
+        if ($attempt) {
+            $attempt->update([
+                'score'  => $correct,
+                'status' => $status,
+            ]);
+        } else {
+            logger()->warning("Attempt not found for ID: {$currentAttemptId}, user: {$userId}, lesson: {$lesson->id}");
+        }
     }
+
+
 
     public function render()
     {

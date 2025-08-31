@@ -14,6 +14,7 @@ class QuizQuestion extends Component
     public $selectedOption = null;
     public $isSubmitted = false;
     public $isCorrect = false;
+    public $attemptId;
     public $counter = 0;
 
     public function saveAnswer($selected, $isCorrect)
@@ -22,6 +23,7 @@ class QuizQuestion extends Component
             [
                 'user_id' => Auth::id(),
                 'quiz_question_id' => $this->questionId,
+                'quiz_attempt_id' => $this->attemptId, 
             ],
             [
                 'selected_option' => $selected,
@@ -29,9 +31,10 @@ class QuizQuestion extends Component
             ]
         );
 
+        // Notify Alpine/Livewire about the answer
         $this->dispatch('answer-submitted', isCorrect: $isCorrect);
-
     }
+
 
 
 

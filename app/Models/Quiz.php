@@ -9,6 +9,11 @@ class Quiz extends Model
 {
     protected $guarded = [];
 
+    public function attempts()
+    {
+        return $this->hasManyThrough(QuizAttempt::class, Lesson::class);
+    }
+
     public function lesson()
     {
         return $this->belongsTo(Lesson::class);

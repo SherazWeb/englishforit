@@ -40,20 +40,44 @@ Route::get('/{module:slug}/{lesson:slug}', function (Module $module, Lesson $les
 
     $user = Auth::user();
 
-    $latestAttempt = null;
-    if ($user) {
-        $latestAttempt = QuizAttempt::where('user_id', $user->id)
-            ->where('lesson_id', $lesson->id)
-            ->latest()
-            ->first();
+    $maxAttempts = 2;
+
+    $highestScore = QuizAttempt::where('user_id', $user->id)
+    ->where('lesson_id', $lesson->id)
+    ->max('score');
+
+    $attempt = QuizAttempt::where('user_id', $user->id)
+        ->where('lesson_id', $lesson->id)
+        ->latest('id')
+        ->first();
+
+    if (!$attempt) {
+        // No attempt exists, create a new one
+        $attempt = QuizAttempt::create([
+            'user_id' => $user->id,
+            'lesson_id' => $lesson->id,
+            'status' => 'in_progress',
+            'attempt_number' => 1,
+            'score' => 0,
+        ]);
+    } elseif (in_array($attempt->status, ['completed', 'almost_perfect']) && $attempt->attempt_number < $maxAttempts) {
+        // First attempt completed, start second attempt
+        $attempt = QuizAttempt::create([
+            'user_id' => $user->id,
+            'lesson_id' => $lesson->id,
+            'status' => 'in_progress',
+            'attempt_number' => $attempt->attempt_number + 1,
+            'score' => 0,
+        ]);
     }
 
     return view('index', [
-        'module'        => $module,
-        'contents'      => $lesson,
-        'modules'       => Module::with('lessons')->get(),
-        'questions'     => $randomQuestions,
-        'latestAttempt' => $latestAttempt,
+        'module' => $module,
+        'contents' => $lesson,
+        'modules' => Module::with('lessons')->get(),
+        'questions' => $randomQuestions,
+        'latestAttempt' => $attempt,
+        'max_score' => $highestScore
     ]);
 })->name('lesson.show');
 

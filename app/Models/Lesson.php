@@ -34,4 +34,9 @@ class Lesson extends Model
             'id'         // Local key on quizzes table
         );
     }
+
+    public function quizAttempts()
+    {
+        return $this->hasMany(QuizAttempt::class);
+    }
 }

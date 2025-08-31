@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('lesson_id')->constrained()->cascadeOnDelete();
             $table->integer('score');
-            $table->enum('status', ['completed', 'mastered', 'Almost Perfect']);
+            $table->enum('status', ['in_progress', 'completed', 'mastered', 'almost_perfect']);
             $table->integer('attempt_number')->default(1);
             $table->timestamps();
         });
